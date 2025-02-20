@@ -1,0 +1,75 @@
+def print_board(board):
+    #Состояние игрового поля
+    for row in board:
+        print(" | ".join(row))
+        print("-" * 9)
+
+#Проверка победителя
+def check_winner(board):
+    # Проверка по горизонтали и вертикали
+    for i in range(3): #Три хода: проход по индексам от 0 до 2
+        # Проверка горизонтали
+        if board[i][0] == board[i][1] == board[i][2] != " ": #Элементы текущей строки
+            return board[i][0] #Если условие истино, возвращение строки
+        #Проверка вертикали. Аналогично
+        if board[0][i] == board[1][i] == board[2][i] != " ":
+            return board[0][i]
+
+    # Проверка по диагонали
+    if board[0][0] == board[1][1] == board[2][2] != " ":
+        return board[0][0]
+    if board[0][2] == board[1][1] == board[2][0] != " ":
+        return board[0][2]
+
+    return None
+
+
+def is_board_full(board):
+    #Проверка на заполненность
+    for row in board: #Проход цикла по каждой строке с тремя элементами
+        if " " in row: #Проверка на пробел
+            return False
+    return True
+
+#Координаты хода
+def get_player_move(board, player):
+    #Проверка корректности ввода
+    while True: #Бесконечен до тех пор пока не введены корректные координаты
+        try: #Обработка ошибок
+            row = int(input(f"Игрок {player}, введите номер строки (0-2): ")) #Преобразование номера строки в целое число
+            col = int(input(f"Игрок {player}, введите номер столбца (0-2): ")) #Преобразование номера столбца в целое число
+            if not (0 <= row <= 2 and 0 <= col <= 2): #Проверка корректности
+                print("Некорректные координаты.")
+            elif board[row][col] != " ": #Проверка занятости клетки
+                print("Эта клетка уже занята.")
+            else:
+                return row, col #Верно. Возвращение назад
+        except ValueError:
+            print("Некорректный ввод.")
+
+
+def play_tic_tac_toe():
+    #Основная функция
+    board = [[" " for _ in range(3)] for _ in range(3)]  # Создание игрового поля 3 на 3
+    current_player = "X"  # Начинает игрок X
+    winner = None
+
+    print("Игра 'Крестики-нолики'!")
+    print_board(board) #Отображение текущего состояния игнрового поля
+
+    while not winner and not is_board_full(board): #Продолжение цикла пока не будет победителя
+        row, col = get_player_move(board, current_player) #Координаты хода игрока
+        board[row][col] = current_player #обновление поля
+        print_board(board) #Отображение поля
+        winner = check_winner(board) #Проверка на победителя
+        current_player = "O" if current_player == "X" else "X" #Смена игрока
+
+    if winner:
+        print(f"Игрок {winner} победил!")
+    else:
+        print("Ничья!")
+
+
+if __name__ == "__main__":
+    play_tic_tac_toe()
+
